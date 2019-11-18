@@ -1,0 +1,34 @@
+create-ledger iceland description 'iceland ledger' seed 'vik'
+create-account josh
+create-account kristen
+create-account chris
+create-account john
+create-account connor
+get-account-balance master
+get-account-balance josh
+get-account-balance kristen
+process-transaction 1 amount 700 fee 10 payload 'pay kristen' payer josh receiver kristen
+process-transaction 1 amount 100 fee 10 payload 'pay kristen' payer master receiver kristen
+get-account-balance master 
+process-transaction 2 amount 50 fee 10 payload 'pay josh' payer kristen receiver josh
+get-account-balance kristen
+get-account-balance josh
+process-transaction 3 amount 30 fee 10 payload 'pay manisha' payer josh receiver manisha
+get-account-balance josh
+process-transaction 3 amount 70 fee 10 payload 'pay connor' payer connor receiver josh
+get-block 1
+get-account-balances
+process-transaction 3 amount 10000 fee 10 payload 'pay all' payer master receiver josh
+process-transaction 4 amount 10000 fee 10 payload 'pay all' payer master receiver josh
+process-transaction 5 amount 10000 fee 10 payload 'pay all' payer master receiver kristen
+process-transaction 6 amount 10000 fee 10 payload 'pay all' payer master receiver john
+process-transaction 7 amount 10000 fee 10 payload 'pay all' payer master receiver connor
+process-transaction 8 amount 10000 fee 10 payload 'pay all' payer master receiver chris
+get-account-balances
+process-transaction 9 amount 10000 fee 10 payload 'pay all' payer john receiver chris
+process-transaction 10 amount 1000 fee 10 payload 'pay all' payer john receiver chris
+process-transaction 11 amount 1000 fee 10 payload 'pay all' payer john receiver connor
+process-transaction 12 amount 1000 fee 10 payload 'pay all' payer john receiver kristen
+process-transaction 13 amount 1000 fee 10 payload 'pay all' payer john receiver josh
+get-account-balance josh 
+validate

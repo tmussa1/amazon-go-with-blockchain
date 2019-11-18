@@ -1,0 +1,78 @@
+#iceland is a hot spot for miners
+create-ledger iceland description 'iceland ledger' seed 'vik'
+create-account josh
+create-account kristen
+create-account chris
+create-account john
+create-account connor
+
+#master should have all of the balance
+get-account-balance master
+
+#both accounts will have a zero balance
+get-account-balance josh
+get-account-balance kristen
+
+#Will throw exception since josh doesn't have any money
+process-transaction 1 amount 700 fee 10 payload 'pay kristen' payer josh receiver kristen
+
+#transactionOrderIdentifier of 1 doesn't throw exception since previous transaction was not processed
+process-transaction 1 amount 100 fee 10 payload 'pay kristen' payer master receiver kristen
+
+#master's balance decreased by just 100, the amount, because fee doesn't apply to master
+get-account-balance master
+
+
+#now kristen can send josh some money. Remember deviation from design document. Transactions are in real time. 
+process-transaction 2 amount 50 fee 10 payload 'pay josh' payer kristen receiver josh
+
+#now kristen has 40 dollars left
+get-account-balance kristen
+
+#josh has 50
+get-account-balance josh
+
+#josh tries to send some of that money to an account that doesn't exist, he should get error
+process-transaction 3 amount 30 fee 10 payload 'pay manisha' payer josh receiver manisha
+
+#josh's balance is still 50 since the transaction didn't go through
+get-account-balance josh
+
+
+#connor wants to send josh some money, he is too broke
+process-transaction 3 amount 70 fee 10 payload 'pay connor' payer connor receiver josh
+
+#Now let's see the status of the block and it's transactions so far. Only successful transactions should show
+get-block 1
+
+#let's look at the account balances for everyone. Only josh, kristen and master must be active
+get-account-balances
+
+#master is rewarding everyone 10000 dollars now. We can use the same transactionOrderIdentifier since Connor's transaction was invalid 
+#Josh gets paid twice. Since every transaction has a unique UUID, that is fine - he gets to keep 200000
+process-transaction 3 amount 10000 fee 10 payload 'pay all' payer master receiver josh
+process-transaction 4 amount 10000 fee 10 payload 'pay all' payer master receiver josh
+process-transaction 5 amount 10000 fee 10 payload 'pay all' payer master receiver kristen
+process-transaction 6 amount 10000 fee 10 payload 'pay all' payer master receiver john
+process-transaction 7 amount 10000 fee 10 payload 'pay all' payer master receiver connor
+process-transaction 8 amount 10000 fee 10 payload 'pay all' payer master receiver chris
+
+#everyone has money now
+get-account-balances
+
+#john wants to send all his money to chris. He didn't deduct the fee from what he has. Transaction fails
+process-transaction 9 amount 10000 fee 10 payload 'pay all' payer john receiver chris
+
+#john decides to give everyone else 1000
+process-transaction 10 amount 1000 fee 10 payload 'pay all' payer john receiver chris
+process-transaction 11 amount 1000 fee 10 payload 'pay all' payer john receiver connor
+process-transaction 12 amount 1000 fee 10 payload 'pay all' payer john receiver kristen
+process-transaction 13 amount 1000 fee 10 payload 'pay all' payer john receiver josh
+
+
+#john now has 5600 left
+get-account-balance josh
+
+#The account balances should add upto the master's balance during initialization at any given time. Let's validate that 
+validate
+
