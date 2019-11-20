@@ -24,7 +24,7 @@ public class AuthenticationService implements IAuthenticationService, Visitable 
     /**
      * Constructor
      */
-    public AuthenticationService() {
+    private AuthenticationService() {
         this.users = new ArrayList<>();
         this.tokens = new ArrayList<>();
         this.entitlements = new ArrayList<>();
