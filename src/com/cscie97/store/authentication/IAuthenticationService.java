@@ -28,7 +28,7 @@ public interface IAuthenticationService {
     Role addChildResourceRoleToParentRole(String parentRoleId, String childResourceRoleId);
     AuthenticationToken generateToken(String userId, String userName, String password);
     AuthenticationToken generateToken(String userId, String voiceFacePrint);
-    AuthenticationToken validateIfTokenExistsAndIsValid(String tokenId) throws AccessDeniedException;
+    AuthenticationToken validateIfTokenExistsAndIsValid(String tokenId) throws InvalidTokenException;
     State checkTokenExpiry(String tokenId);
     boolean sessionTimedOut(String tokenId);
     State logOut(String userId);

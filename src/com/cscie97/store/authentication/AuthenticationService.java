@@ -333,12 +333,12 @@ public class AuthenticationService implements IAuthenticationService, Visitable 
      * @throws AccessDeniedException
      */
     @Override
-    public AuthenticationToken validateIfTokenExistsAndIsValid(String tokenId) throws AccessDeniedException {
+    public AuthenticationToken validateIfTokenExistsAndIsValid(String tokenId) throws InvalidTokenException {
         Optional<AuthenticationToken> token = tokens.stream()
                 .filter(aToken -> aToken.getTokenId().equals(tokenId))
                 .findFirst();
         if(token.isEmpty() || token.get().getExpirationState() == State.EXPIRED){
-            throw new AccessDeniedException("Unable to find token or token expired", "Please authenticate again");
+            throw new InvalidTokenException("Unable to find token or token expired", "Please authenticate again");
         }
         return token.get();
     }
@@ -349,11 +349,11 @@ public class AuthenticationService implements IAuthenticationService, Visitable 
      * @return token state
      */
     @Override
-    public State checkTokenExpiry(String tokenId) {
+    public State checkTokenExpiry(String tokenId){
         AuthenticationToken token = null;
         try {
             token = validateIfTokenExistsAndIsValid(tokenId);
-        } catch (AccessDeniedException e) {
+        } catch (InvalidTokenException e) {
             logger.warning("Unable to check token expiry " + e.getReason() + " : " + e.getFix());
         }
         return token.getExpirationState();
@@ -373,7 +373,7 @@ public class AuthenticationService implements IAuthenticationService, Visitable 
             token = validateIfTokenExistsAndIsValid(tokenId);
             token.expireToken();
             loggedOut = true;
-        } catch (AccessDeniedException e) {
+        } catch (InvalidTokenException e) {
             logger.warning("Unable to log out for expiring session "+ e.getReason() + " : " + e.getFix());
         }
         return loggedOut;
@@ -426,7 +426,7 @@ public class AuthenticationService implements IAuthenticationService, Visitable 
              token = validateIfTokenExistsAndIsValid(tokenId);
              checkAccessVisitor = new CheckAccessVisitor(token, resource, permission);
              this.accept(checkAccessVisitor);
-        } catch (AccessDeniedException e) {
+        } catch (InvalidTokenException e) {
             logger.info("Unable to access the resource " + e.getReason() + " : " + e.getFix());
         }
         if(!checkAccessVisitor.hasPermission()){

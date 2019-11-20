@@ -2,7 +2,7 @@ package com.cscie97.store.authentication;
 
 /**
  * @author Tofik Mussa
- * Gets thrown for invalid tokens. This is a subset of the parent exception
+ * Gets thrown for absence of permissions. This is a subset of the parent exception
  */
 public class AccessDeniedException extends AuthenticationServiceException {
 
